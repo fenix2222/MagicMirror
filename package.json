@@ -36,6 +36,7 @@
     "time-grunt": "latest"
   },
   "dependencies": {
+    "azure": "^1.2.0-preview",
     "electron": "^1.4.7",
     "express": "^4.14.0",
     "express-ipfilter": "latest",

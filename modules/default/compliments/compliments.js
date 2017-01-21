@@ -43,6 +43,7 @@ Module.register("compliments",{
 
 	// Define start sequence.
 	start: function() {
+		debugger;
 		Log.info("Starting module: " + this.name);
 
 		this.lastComplimentIndex = -1;
@@ -58,6 +59,25 @@ Module.register("compliments",{
 		setInterval(function() {
 			self.updateDom(self.config.fadeSpeed);
 		}, this.config.updateInterval);
+
+		// console.log("require azure completed");
+		// var azure = require('azure');
+		// console.log(azure);
+		
+		// console.log("creating service bus");
+		// var serviceBusService = azure.createServiceBusService();
+		// console.log("created service bus");
+		// serviceBusService.createSubscription('t.sophie.messages.greetingevent', 'AllMessages', function (error) {
+		//     console.log("created subscription");
+		// 	if (!error) {
+		//         serviceBusService.receiveSubscriptionMessage('t.sophie.messages.greetingevent', 'AllMessages', function (error, receivedMessage) {
+		//             if (!error) {
+		//                 // Message received and deleted
+		//                 console.log(receivedMessage);
+		//             }
+		//         });
+		//     }
+		// });
 	},
 
 	/* randomIndex(compliments)

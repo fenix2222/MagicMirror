@@ -13,6 +13,7 @@ var path = require("path");
 var ipfilter = require("express-ipfilter").IpFilter;
 var fs = require("fs");
 var helmet = require("helmet");
+var azure = require('azure');
 
 var Server = function(config, callback) {
 	console.log("Starting server op port " + config.port + " ... ");
@@ -52,6 +53,30 @@ var Server = function(config, callback) {
 	if (typeof callback === "function") {
 		callback(app, io);
 	}
+	
+	debugger;
+	console.log("creating service bus");
+	//process.env.AZURE_SERVICEBUS_NAMESPACE = config.sbNamespace;
+	//process.env.AZURE_SERVICEBUS_ACCESS_KEY = config.sbKey;
+
+	var serviceBusService = azure.createServiceBusService(config.sbConnectionString);
+	console.log("created service bus");
+	serviceBusService.createSubscription('t.sophie.messages.greetingevent', 'AllMessages', function (error) {
+		console.log("created subscription");
+		if (error) {
+			console.log(error);
+		}
+		setInterval(function() {
+				serviceBusService.receiveSubscriptionMessage('t.sophie.messages.greetingevent', 'AllMessages', function (error, receivedMessage) {
+					if (!error) {
+						// Message received and deleted
+						console.log(receivedMessage);
+					} else {
+						console.log(error);
+					}
+				});
+			}, 3000);
+	});
 };
 
 module.exports = Server;
