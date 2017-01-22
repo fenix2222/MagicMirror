@@ -43,7 +43,6 @@ Module.register("compliments",{
 
 	// Define start sequence.
 	start: function() {
-		debugger;
 		Log.info("Starting module: " + this.name);
 
 		this.lastComplimentIndex = -1;
@@ -54,30 +53,24 @@ Module.register("compliments",{
 			});
 		}
 
+		console.log("connect signalr channel");
+		var connection = $.connection('/signalr');
+		connection.error(function(error){
+			console.log(error);
+		});
+		connection.received(function (data) {
+			console.log('The time is ' + data.message);
+		});
+
+		connection.start().done(function() {
+			console.log("connection started!");
+		});
+
 		// Schedule update timer.
 		var self = this;
 		setInterval(function() {
 			self.updateDom(self.config.fadeSpeed);
 		}, this.config.updateInterval);
-
-		// console.log("require azure completed");
-		// var azure = require('azure');
-		// console.log(azure);
-		
-		// console.log("creating service bus");
-		// var serviceBusService = azure.createServiceBusService();
-		// console.log("created service bus");
-		// serviceBusService.createSubscription('t.sophie.messages.greetingevent', 'AllMessages', function (error) {
-		//     console.log("created subscription");
-		// 	if (!error) {
-		//         serviceBusService.receiveSubscriptionMessage('t.sophie.messages.greetingevent', 'AllMessages', function (error, receivedMessage) {
-		//             if (!error) {
-		//                 // Message received and deleted
-		//                 console.log(receivedMessage);
-		//             }
-		//         });
-		//     }
-		// });
 	},
 
 	/* randomIndex(compliments)

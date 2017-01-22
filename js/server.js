@@ -14,9 +14,13 @@ var ipfilter = require("express-ipfilter").IpFilter;
 var fs = require("fs");
 var helmet = require("helmet");
 var azure = require('azure');
+var SignalRJS = require('signalrjs');
 
 var Server = function(config, callback) {
 	console.log("Starting server op port " + config.port + " ... ");
+	var signalR = SignalRJS();
+	app.use(signalR.createListener());
+	console.log('setup signalr server.');
 
 	server.listen(config.port, config.address ? config.address : null);
 
@@ -66,17 +70,23 @@ var Server = function(config, callback) {
 		if (error) {
 			console.log(error);
 		}
-		setInterval(function() {
+		
+		console.log('setup connection listener.');
+		signalR.on('CONNECTED',function(){
+			console.log('connected');
+			setInterval(function() {
 				serviceBusService.receiveSubscriptionMessage('t.sophie.messages.greetingevent', 'AllMessages', function (error, receivedMessage) {
 					if (!error) {
-						// Message received and deleted
 						console.log(receivedMessage);
+						signalR.broadcast({ message: receivedMessage });
 					} else {
 						console.log(error);
 					}
 				});
 			}, 3000);
+		});
 	});
 };
+
 
 module.exports = Server;
