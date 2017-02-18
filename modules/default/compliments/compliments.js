@@ -35,6 +35,7 @@ Module.register("compliments",{
 
 	// Set currentweather from module
 	currentWeatherType: "",
+	currentMessage: "",
 
 	// Define required scripts.
 	getScripts: function() {
@@ -59,7 +60,8 @@ Module.register("compliments",{
 			console.log(error);
 		});
 		connection.received(function (data) {
-			console.log('The time is ' + data.message);
+			self.currentMessage = data.message;
+			self.updateDom(self.config.fadeSpeed);
 		});
 
 		connection.start().done(function() {
@@ -152,10 +154,23 @@ Module.register("compliments",{
 	},
 
 	// Override dom generator.
-	getDom: function() {
-		var complimentText = this.randomCompliment();
+	// getDom: function() {
+	// 	var complimentText = this.randomCompliment();
 
-		var compliment = document.createTextNode(complimentText);
+	// 	var compliment = document.createTextNode(complimentText);
+	// 	var wrapper = document.createElement("div");
+	// 	wrapper.className = this.config.classes ? this.config.classes : "thin xlarge bright";
+	// 	wrapper.appendChild(compliment);
+
+	// 	return wrapper;
+	// },
+	getDom: function() {
+		var text = "Waiting for new message";
+		if (this.currentMessage) {
+			var text = $($.parseHTML(this.currentMessage.body)).find("Message").text()
+		}
+		
+		var compliment = document.createTextNode(text);
 		var wrapper = document.createElement("div");
 		wrapper.className = this.config.classes ? this.config.classes : "thin xlarge bright";
 		wrapper.appendChild(compliment);
