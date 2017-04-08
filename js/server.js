@@ -65,7 +65,7 @@ var Server = function(config, callback) {
 
 	var serviceBusService = azure.createServiceBusService(config.sbConnectionString);
 	console.log("created service bus");
-	serviceBusService.createSubscription('t.sophie.messages.greetingevent', 'AllMessages', function (error) {
+	serviceBusService.createSubscription('t.sophie.messages.persondetectedevent', 'AllMessages', function (error) {
 		console.log("created subscription");
 		if (error) {
 			console.log(error);
@@ -75,7 +75,7 @@ var Server = function(config, callback) {
 		signalR.on('CONNECTED',function(){
 			console.log('connected');
 			setInterval(function() {
-				serviceBusService.receiveSubscriptionMessage('t.sophie.messages.greetingevent', 'AllMessages', function (error, receivedMessage) {
+				serviceBusService.receiveSubscriptionMessage('t.sophie.messages.persondetectedevent', 'AllMessages', function (error, receivedMessage) {
 					if (!error) {
 						console.log(receivedMessage);
 						signalR.broadcast({ message: receivedMessage });
